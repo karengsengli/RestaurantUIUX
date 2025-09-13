@@ -7,557 +7,82 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        h1 {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        /* Button Styles */
-        .button-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            margin: 30px 0;
-            padding: 20px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-        .action-btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            min-width: 220px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .survey-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
-        .result-btn {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            color: white;
-        }
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 25px;
-        }
-        .chart-container {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .chart-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #333;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        canvas {
-            max-height: 350px;
-        }
-        .stats {
-            margin-top: 15px;
-            font-size: 12px;
-            color: #666;
-            text-align: center;
-            font-weight: bold;
-        }
+        body { font-family: 'Arial', sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 { text-align: center; color: white; margin-bottom: 40px; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .button-container { display: flex; justify-content: center; align-items: center; gap: 30px; margin: 30px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px); }
+        .action-btn { padding: 15px 30px; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; min-width: 220px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .survey-btn { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .result-btn { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px; }
+        .chart-container { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        .chart-title { font-size: 16px; font-weight: bold; margin-bottom: 20px; text-align: center; color: #333; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
+        canvas { max-height: 350px; }
+        .stats { margin-top: 15px; font-size: 12px; color: #666; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🍽️ Restaurant Survey Data Analysis Dashboard</h1>
-        
-        <!-- Action Buttons -->
         <div class="button-container">
-            <button class="action-btn survey-btn" onclick="openSurvey()">
-                📝 View Survey Questions
-            </button>
-            <button class="action-btn result-btn" onclick="openResults()">
-                📊 View Survey Results
-            </button>
+            <button class="action-btn survey-btn" onclick="openSurvey()">📝 View Survey Questions</button>
+            <button class="action-btn result-btn" onclick="openResults()">📊 View Survey Results</button>
         </div>
-        
         <div class="chart-grid">
-            <!-- Age Range -->
-            <div class="chart-container">
-                <div class="chart-title">Age Range Distribution</div>
-                <canvas id="ageChart"></canvas>
-                <div class="stats">Total Responses: 16</div>
-            </div>
-            
-            <!-- Dining Frequency -->
-            <div class="chart-container">
-                <div class="chart-title">How Often Do You Dine Out or Order Food in Bangkok?</div>
-                <canvas id="diningChart"></canvas>
-            </div>
-            
-            <!-- Devices Used -->
-            <div class="chart-container">
-                <div class="chart-title">Which Devices Do You Primarily Use to Search for Restaurants?</div>
-                <canvas id="devicesChart"></canvas>
-            </div>
-            
-            <!-- Language Preference -->
-            <div class="chart-container">
-                <div class="chart-title">Primary Language Preference for Restaurant Websites</div>
-                <canvas id="languageChart"></canvas>
-            </div>
-            
-            <!-- Restaurant Discovery -->
-            <div class="chart-container">
-                <div class="chart-title">How Do You Currently Find Restaurants in Bangkok?</div>
-                <canvas id="discoveryChart"></canvas>
-            </div>
-            
-            <!-- Frustrations -->
-            <div class="chart-container">
-                <div class="chart-title">What Frustrates You Most About Current Restaurant Discovery Platforms?</div>
-                <canvas id="frustrationChart"></canvas>
-            </div>
-            
-            <!-- Visual Style -->
-            <div class="chart-container">
-                <div class="chart-title">Which Visual Style Do You Prefer for a Restaurant Platform?</div>
-                <canvas id="styleChart"></canvas>
-            </div>
-            
-            <!-- Photo Importance -->
-            <div class="chart-container">
-                <div class="chart-title">How Important Are High-Quality Food Photos? (1-10 Scale)</div>
-                <canvas id="photoChart"></canvas>
-            </div>
-            
-            <!-- Layout Preference -->
-            <div class="chart-container">
-                <div class="chart-title">Preferred Layout for Restaurant Listings</div>
-                <canvas id="layoutChart"></canvas>
-            </div>
-            
-            <!-- Display Information -->
-            <div class="chart-container">
-                <div class="chart-title">What Restaurant Information Should Be Displayed Prominently?</div>
-                <canvas id="displayInfoChart"></canvas>
-            </div>
-            
-            <!-- Content Type -->
-            <div class="chart-container">
-                <div class="chart-title">What Type of Content Helps You Make Restaurant Decisions?</div>
-                <canvas id="contentTypeChart"></canvas>
-            </div>
-            
-            <!-- Information Importance -->
-            <div class="chart-container">
-                <div class="chart-title">How Important Is Up-to-Date Information in a Website?</div>
-                <canvas id="infoImportanceChart"></canvas>
-            </div>
-            
-            <!-- Trust Factors -->
-            <div class="chart-container">
-                <div class="chart-title">What Makes You Trust a Restaurant Review Platform?</div>
-                <canvas id="trustChart"></canvas>
-            </div>
-            
-            <!-- Review Format -->
-            <div class="chart-container">
-                <div class="chart-title">Ideal Review Display Format</div>
-                <canvas id="reviewFormatChart"></canvas>
-            </div>
-            
-            <!-- Account Features -->
-            <div class="chart-container">
-                <div class="chart-title">Would You Be Willing to Create an Account to:</div>
-                <canvas id="accountChart"></canvas>
-            </div>
-            
-            <!-- Loading Time -->
-            <div class="chart-container">
-                <div class="chart-title">Maximum Acceptable Loading Time for the Website</div>
-                <canvas id="loadingChart"></canvas>
-            </div>
+            <div class="chart-container"><div class="chart-title">Age Range Distribution</div><canvas id="ageChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Dining Frequency</div><canvas id="diningChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Devices Used</div><canvas id="devicesChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Language Preference</div><canvas id="languageChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Restaurant Discovery Methods</div><canvas id="discoveryChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Frustrations</div><canvas id="frustrationChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Visual Style Preference</div><canvas id="styleChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Photo Importance</div><canvas id="photoChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Layout Preference</div><canvas id="layoutChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Display Information</div><canvas id="displayInfoChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Content Type</div><canvas id="contentTypeChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Information Importance</div><canvas id="infoImportanceChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Trust Factors</div><canvas id="trustChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Review Format</div><canvas id="reviewFormatChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Account Features</div><canvas id="accountChart"></canvas></div>
+            <div class="chart-container"><div class="chart-title">Loading Time</div><canvas id="loadingChart"></canvas></div>
         </div>
     </div>
 
     <script>
-        // Button functions
-        function openSurvey() {
-            window.open('https://build.fillout.com/editor/rpp861jLHXus', '_blank');
-        }
-        
-        function openResults() {
-            window.open('https://build.fillout.com/editor/rpp861jLHXus/results', '_blank');
-        }
-        
-        // Wait for DOM to load
+        function openSurvey(){ window.open('https://build.fillout.com/editor/rpp861jLHXus','_blank'); }
+        function openResults(){ window.open('https://build.fillout.com/editor/rpp861jLHXus/results','_blank'); }
+
         document.addEventListener('DOMContentLoaded', function() {
-            
-            // Color schemes
-            const vibrantColors = [
-                '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-                '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
-                '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
-            ];
-            
-            const backgroundColors = vibrantColors.map(color => color + '80');
-            
-            // Common chart options without datalabels
+            const vibrantColors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F','#BB8FCE','#85C1E9','#F8C471','#82E0AA','#F1948A','#9F7AEA','#3182CE'];
+            const backgroundColors = vibrantColors.map(c=>c+'80');
+
             const commonOptions = {
-                responsive: true,
                 plugins: {
-                    legend: {
-                        display: true
+                    datalabels: {
+                        color: '#333',
+                        font: { weight: 'bold' },
+                        formatter: (value) => value
                     }
                 }
             };
 
-            // 1. Age Range Chart
-            new Chart(document.getElementById('ageChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['18-24 years (31%)', '25-34 years (69%)'],
-                    datasets: [{
-                        data: [5, 11],
-                        backgroundColor: ['#FF6B6B80', '#4ECDC480'],
-                        borderColor: ['#FF6B6B', '#4ECDC4'],
-                        borderWidth: 3
-                    }]
-                },
-                options: commonOptions
-            });
-
-            // 2. Dining Frequency Chart
-            new Chart(document.getElementById('diningChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Daily', '3-4 times\nper week', 'Few times\nper month', '1-2 times\nper week', 'Rarely'],
-                    datasets: [{
-                        label: 'Responses',
-                        data: [2, 5, 3, 3, 3],
-                        backgroundColor: backgroundColors[2],
-                        borderColor: vibrantColors[2],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { stepSize: 1 }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-
-            // 3. Devices Chart
-            new Chart(document.getElementById('devicesChart'), {
-                type: 'pie',
-                data: {
-                    labels: ['Smartphone (16)', 'Tablet (3)', 'Laptop (2)', 'Desktop (2)'],
-                    datasets: [{
-                        data: [16, 3, 2, 2],
-                        backgroundColor: backgroundColors.slice(0, 4),
-                        borderColor: vibrantColors.slice(0, 4),
-                        borderWidth: 3
-                    }]
-                },
-                options: commonOptions
-            });
-
-            // 4. Language Preference Chart
-            new Chart(document.getElementById('languageChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Both Thai and English (69%)', 'English Only (31%)'],
-                    datasets: [{
-                        data: [11, 5],
-                        backgroundColor: ['#96CEB480', '#FFEAA780'],
-                        borderColor: ['#96CEB4', '#FFEAA7'],
-                        borderWidth: 3
-                    }]
-                },
-                options: commonOptions
-            });
-
-            // 5. Restaurant Discovery Methods
-            new Chart(document.getElementById('discoveryChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Food delivery\napps', 'Social media', 'Google\nSearch', 'Walking/\nexploration', 'Review\nwebsites', 'Word of\nmouth'],
-                    datasets: [{
-                        label: 'Mentions',
-                        data: [10, 9, 4, 4, 2, 1],
-                        backgroundColor: backgroundColors[6],
-                        borderColor: vibrantColors[6],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    indexAxis: 'y',
-                    scales: {
-                        x: { beginAtZero: true, ticks: { stepSize: 1 } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-
-            // 6. Frustrations Chart
-            new Chart(document.getElementById('frustrationChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Too much info/\ncluttered interface', 'Inaccurate\ninformation', 'Poor search\nfunctionality', 'Difficulty finding\nspecific cuisines'],
-                    datasets: [{
-                        label: 'Responses',
-                        data: [6, 5, 3, 2],
-                        backgroundColor: backgroundColors[7],
-                        borderColor: vibrantColors[7],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-
-            // 7. Visual Style Chart
-            new Chart(document.getElementById('styleChart'), {
-                type: 'pie',
-                data: {
-                    labels: ['Clean and minimal (10)', 'Modern and sleek (3)', 'Vibrant and colorful (1)', 'Warm and inviting (1)'],
-                    datasets: [{
-                        data: [10, 3, 1, 1],
-                        backgroundColor: backgroundColors.slice(8, 12),
-                        borderColor: vibrantColors.slice(8, 12),
-                        borderWidth: 3
-                    }]
-                },
-                options: commonOptions
-            });
-
-            // 8. Photo Importance Chart
-            new Chart(document.getElementById('photoChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['5', '6', '7', '8', '9', '10'],
-                    datasets: [{
-                        label: 'Responses',
-                        data: [4, 1, 4, 2, 2, 3],
-                        backgroundColor: backgroundColors[12],
-                        borderColor: vibrantColors[12],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1 } },
-                        x: { title: { display: true, text: 'Importance Rating (1-10 scale)' } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-
-            // 9. Layout Preference Chart - WITH COMPLETELY DIFFERENT COLORS
-            new Chart(document.getElementById('layoutChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Grid view (7)', 'Mixed layout options (2)', 'Card-based layout (2)', 'List view (2)', 'Map-integrated view (3)'],
-                    datasets: [{
-                        data: [7, 2, 2, 2, 3],
-                        backgroundColor: [
-                            '#E53E3E', // Red
-                            '#38A169', // Green
-                            '#DD6B20', // Orange  
-                            '#9F7AEA', // Purple
-                            '#3182CE'  // Blue
-                        ],
-                        borderColor: [
-                            '#E53E3E',
-                            '#38A169', 
-                            '#DD6B20',
-                            '#9F7AEA',
-                            '#3182CE'
-                        ],
-                        borderWidth: 3
-                    }]
-                },
-                options: commonOptions
-            });
-
-            // 10. Display Information Chart
-            new Chart(document.getElementById('displayInfoChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Rating/review\nscore', 'Restaurant\nname', 'Main photo', 'Average\nprice range', 'Operating\nstatus', 'Cuisine type', 'Distance from\nlocation', 'Popular\ndishes'],
-                    datasets: [{
-                        label: 'Mentions',
-                        data: [8, 7, 7, 6, 6, 4, 3, 3],
-                        backgroundColor: backgroundColors[0],
-                        borderColor: vibrantColors[0],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    indexAxis: 'y',
-                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } },
-                    plugins: { legend: { display: false } }
-                }
-            });
-
-            // 11. Content Type Chart - CHANGED TO BAR CHART
-            new Chart(document.getElementById('contentTypeChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Menu with\nprices', 'Written\nreviews', 'Star\nratings', 'Restaurant\natmosphere photos', 'User-generated\nphotos', 'Professional food\nphotography', 'Video\ncontent'],
-                    datasets: [{
-                        label: 'Mentions',
-                        data: [8, 6, 5, 4, 2, 2, 2],
-                        backgroundColor: backgroundColors[1],
-                        borderColor: vibrantColors[1],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
-                    plugins: { legend: { display: false } }
-                }
-            });
-
-            // 12. Information Importance Chart
-            new Chart(document.getElementById('infoImportanceChart'), {
-                type: 'pie',
-                data: {
-                    labels: ['Critical (75%)', 'Very important (19%)', 'Not important (6%)'],
-                    datasets: [{
-                        data: [12, 3, 1],
-                        backgroundColor: backgroundColors.slice(8, 11),
-                        borderColor: vibrantColors.slice(8, 11),
-                        borderWidth: 3
-                    }]
-                },
-                options: commonOptions
-            });
-
-            // 13. Trust Factors Chart
-            new Chart(document.getElementById('trustChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Detailed written\nreviews', 'Recent review\ndates', 'Large number\nof reviews', 'Verified reviewer\nprofiles', 'Integration with\nsocial media', 'Response from\nowners', 'Professional\ncritic reviews'],
-                    datasets: [{
-                        label: 'Mentions',
-                        data: [9, 7, 6, 5, 3, 3, 2],
-                        backgroundColor: backgroundColors[11],
-                        borderColor: vibrantColors[11],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    indexAxis: 'y',
-                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } },
-                    plugins: { legend: { display: false } }
-                }
-            });
-
-            // 14. Review Format Chart
-            new Chart(document.getElementById('reviewFormatChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Overall rating with recent highlights (38%)', 'Full reviews sorted by date (31%)', 'Review summaries with sentiment analysis (31%)'],
-                    datasets: [{
-                        data: [6, 5, 5],
-                        backgroundColor: backgroundColors.slice(12, 15),
-                        borderColor: vibrantColors.slice(12, 15),
-                        borderWidth: 3
-                    }]
-                },
-                options: commonOptions
-            });
-
-            // 15. Account Features Chart
-            new Chart(document.getElementById('accountChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Save favorite\nrestaurants', 'Get personalized\nrecommendations', 'Receive\npromotional offers', 'Write reviews', 'None of\nthe above'],
-                    datasets: [{
-                        label: 'Mentions',
-                        data: [9, 5, 4, 4, 2],
-                        backgroundColor: backgroundColors[13],
-                        borderColor: vibrantColors[13],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
-                    plugins: { legend: { display: false } }
-                }
-            });
-
-            // 16. Loading Time Chart
-            new Chart(document.getElementById('loadingChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Under 2 seconds', '2-3 seconds', '3-5 seconds'],
-                    datasets: [{
-                        label: 'Responses',
-                        data: [1, 11, 4],
-                        backgroundColor: backgroundColors[14],
-                        borderColor: vibrantColors[14],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
-                    plugins: { legend: { display: false } }
-                }
-            });
+            new Chart(document.getElementById('ageChart'), {type:'doughnut',data:{labels:['18-24 (5)','25-34 (11)'],datasets:[{data:[5,11],backgroundColor:[backgroundColors[0],backgroundColors[1]],borderColor:[vibrantColors[0],vibrantColors[1]],borderWidth:3}]},options:commonOptions,plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('diningChart'), {type:'bar',data:{labels:['Daily (2)','3-4 times (5)','Few times/month (3)','1-2 times (3)','Rarely (3)'],datasets:[{label:'Responses',data:[2,5,3,3,3],backgroundColor:backgroundColors[2],borderColor:vibrantColors[2],borderWidth:2}]},options:{...commonOptions,scales:{y:{beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top'}}},plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('devicesChart'), {type:'pie',data:{labels:['Smartphone (16)','Tablet (2)','Laptop (2)','Desktop (2)'],datasets:[{data:[16,2,2,2],backgroundColor:backgroundColors.slice(0,4),borderColor:vibrantColors.slice(0,4),borderWidth:3}]},options:commonOptions,plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('languageChart'), {type:'doughnut',data:{labels:['Both Thai+English (11)','English only (5)'],datasets:[{data:[11,5],backgroundColor:[backgroundColors[3],backgroundColors[4]],borderColor:[vibrantColors[3],vibrantColors[4]],borderWidth:3}]},options:commonOptions,plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('discoveryChart'), {type:'bar',data:{labels:['Food delivery apps (9)','Social media (10)','Google (5)','Walking (5)','Review websites (2)','Word of mouth (1)'],datasets:[{label:'Mentions',data:[9,10,5,5,2,1],backgroundColor:backgroundColors[5],borderColor:vibrantColors[5],borderWidth:2}]},options:{...commonOptions,indexAxis:'y',scales:{x:{beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'right'}}},plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('frustrationChart'), {type:'bar',data:{labels:['Too much info (6)','Inaccurate info (5)','Poor search (3)','Cuisine issues (2)'],datasets:[{label:'Responses',data:[6,5,3,2],backgroundColor:backgroundColors[6],borderColor:vibrantColors[6],borderWidth:2}]},options:{...commonOptions,scales:{y:{beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top'}}},plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('styleChart'), {type:'pie',data:{labels:['Clean & minimal (10)','Modern (3)','Vibrant (1)','Warm (1)'],datasets:[{data:[10,3,1,1],backgroundColor:backgroundColors.slice(7,11),borderColor:vibrantColors.slice(7,11),borderWidth:3}]},options:commonOptions,plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('photoChart'), {type:'bar',data:{labels:['5','6','7','8','9','10'],datasets:[{label:'Responses',data:[4,1,4,2,2,3],backgroundColor:backgroundColors[8],borderColor:vibrantColors[8],borderWidth:2}]},options:{...commonOptions,scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{title:{display:true,text:'Importance (1-10)'}}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top'}}},plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('layoutChart'), {type:'doughnut',data:{labels:['Grid (7)','Mixed (2)','Card (2)','List (2)','Map (3)'],datasets:[{data:[7,2,2,2,3],backgroundColor:[vibrantColors[0],vibrantColors[1],vibrantColors[2],vibrantColors[3],vibrantColors[4]],borderColor:[vibrantColors[0],vibrantColors[1],vibrantColors[2],vibrantColors[3],vibrantColors[4]],borderWidth:3}]},options:commonOptions,plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('displayInfoChart'), {type:'bar',data:{labels:['Rating (9)','Name (8)','Main photo (8)','Price (9)','Status (8)','Cuisine (5)','Distance (4)','Popular (3)'],datasets:[{label:'Mentions',data:[9,8,8,9,8,5,4,3],backgroundColor:backgroundColors[9],borderColor:vibrantColors[9],borderWidth:2}]},options:{...commonOptions,indexAxis:'y',scales:{x:{beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'right'}}},plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('contentTypeChart'), {type:'bar',data:{labels:['Menu (10)','Written (7)','Ratings (7)','Atmosphere (6)','User photos (3)','Pro photos (3)','Video (2)'],datasets:[{label:'Mentions',data:[10,7,7,6,3,3,2],backgroundColor:backgroundColors[10],borderColor:vibrantColors[10],borderWidth:2}]},options:{...commonOptions,scales:{y:{beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top'}}},plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('infoImportanceChart'), {type:'pie',data:{labels:['Critical (12)','Very important (3)','Not important (1)'],datasets:[{data:[12,3,1],backgroundColor:backgroundColors.slice(11,14),borderColor:vibrantColors.slice(11,14),borderWidth:3}]},options:commonOptions,plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('trustChart'), {type:'bar',data:{labels:['Detailed reviews (10)','Recent dates (7)','Many reviews (7)','Verified (5)','Social media (4)','Owners (4)','Critic (2)'],datasets:[{label:'Mentions',data:[10,7,7,5,4,4,2],backgroundColor:backgroundColors[12],borderColor:vibrantColors[12],borderWidth:2}]},options:{...commonOptions,indexAxis:'y',scales:{x:{beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'right'}}},plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('reviewFormatChart'), {type:'doughnut',data:{labels:['Highlights (6)','Full reviews (5)','Summaries (5)'],datasets:[{data:[6,5,5],backgroundColor:backgroundColors.slice(13,16),borderColor:vibrantColors.slice(13,16),borderWidth:3}]},options:commonOptions,plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('accountChart'), {type:'bar',data:{labels:['Favorites (9)','Recommendations (5)','Offers (5)','Write reviews (4)','None (3)'],datasets:[{label:'Mentions',data:[9,5,5,4,3],backgroundColor:backgroundColors[13],borderColor:vibrantColors[13],borderWidth:2}]},options:{...commonOptions,scales:{y:{beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top'}}},plugins:[ChartDataLabels]});
+            new Chart(document.getElementById('loadingChart'), {type:'bar',data:{labels:['<2s (1)','2-3s (11)','3-5s (4)'],datasets:[{label:'Responses',data:[1,11,4],backgroundColor:backgroundColors[14],borderColor:vibrantColors[14],borderWidth:2}]},options:{...commonOptions,scales:{y:{beginAtZero:true,ticks:{stepSize:1}}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top'}}},plugins:[ChartDataLabels]});
         });
     </script>
 </body>
